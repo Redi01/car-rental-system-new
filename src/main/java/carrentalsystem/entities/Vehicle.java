@@ -29,7 +29,6 @@ public class Vehicle {
     @ManyToOne
     @JoinColumn(name = "rented_by_id")
     private User rentedBy;
-
     /*@Enumerated(EnumType.STRING)
     private AvailabilityStatus availabilityStatus;
 */
