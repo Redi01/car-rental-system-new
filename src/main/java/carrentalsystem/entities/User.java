@@ -27,8 +27,10 @@ public class User {
     @OneToMany(mappedBy = "rentedBy")
     private List<Vehicle> rentedVehicles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user" )
+    @OneToMany(mappedBy = "user")
     private List<Review> reviews = new ArrayList<>();
+
+
 //    @Enumerated(EnumType.STRING)
 //    private UserRole role;
 

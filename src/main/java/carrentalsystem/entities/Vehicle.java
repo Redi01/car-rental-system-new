@@ -3,6 +3,7 @@ package carrentalsystem.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,16 +12,14 @@ import java.util.List;
 @Table(name = "vehicles")
 public class Vehicle {
     @Id
+    @GeneratedValue
     private Integer vehicleId;
-
-    @Column(name = "make")
     private String make;
-
     private String model;
     private Integer year;
     private String fuelType;
     private Integer seatingCapacity;
-    private Integer rentalPricePerDay;
+    private BigDecimal rentalPricePerDay;
     @OneToMany(mappedBy = "vehicle")
     private List<Reservation> reservations = new ArrayList<>();
 
@@ -30,6 +29,7 @@ public class Vehicle {
     @ManyToOne
     @JoinColumn(name = "rented_by_id")
     private User rentedBy;
+
     /*@Enumerated(EnumType.STRING)
     private AvailabilityStatus availabilityStatus;
 */
