@@ -12,7 +12,6 @@ public class VehicleController {
 
     private final VehicleService vehicleService;
 
-
     public VehicleController(VehicleService vehicleService) {
         this.vehicleService = vehicleService;
     }
@@ -34,12 +33,12 @@ public class VehicleController {
     }
 
     @PutMapping("/update/{id}")
-    public String updateVehicle(@PathVariable Integer id, @RequestBody VehicleDTO vehicleDTO) {
-        boolean updated = vehicleService.updateVehicle(id, vehicleDTO);
-        if (updated) {
-            return " Vehicle succesfully updated ";
+    public ResponseEntity<String> updateVehicle(@PathVariable Integer id, @RequestBody VehicleDTO vehicleDTO) {
+        VehicleDTO updatedVehicle = vehicleService.updateVehicle(id, vehicleDTO);
+        if (updatedVehicle != null) {
+            return ResponseEntity.ok("Vehicle successfully updated");
         } else {
-            return "Vehicle failed to update";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vehicle not found or failed to update");
         }
     }
 

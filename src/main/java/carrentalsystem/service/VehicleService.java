@@ -7,7 +7,7 @@ public interface VehicleService {
 
     VehicleDTO getVehicleById(Integer id);
 
-    boolean updateVehicle(Integer id, VehicleDTO vehicleDTO);
+    VehicleDTO updateVehicle(Integer id, VehicleDTO vehicleDTO);
 
     boolean deleteVehicle(Integer id);
 }
