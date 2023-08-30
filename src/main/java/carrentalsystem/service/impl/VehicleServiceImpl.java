@@ -2,6 +2,7 @@ package carrentalsystem.service.impl;
 
 import carrentalsystem.dto.VehicleDTO;
 import carrentalsystem.entities.Vehicle;
+import carrentalsystem.mapper.ApiResponse;
 import carrentalsystem.repository.VehicleRepository;
 import carrentalsystem.service.VehicleService;
 import org.modelmapper.ModelMapper;
@@ -10,34 +11,33 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class VehicleSeviceImpl implements VehicleService {
+public class VehicleServiceImpl implements VehicleService {
     private final VehicleRepository vehicleRepository;
     private final ModelMapper modelMapper = new ModelMapper();
 
 
-    public VehicleSeviceImpl(VehicleRepository vehicleRepository) {
+    public VehicleServiceImpl(VehicleRepository vehicleRepository) {
         this.vehicleRepository = vehicleRepository;
     }
 
-    @Override
-    public void createVehicle(VehicleDTO vehicleDTO) {
+    public ApiResponse<Void> createVehicle(VehicleDTO vehicleDTO) {
         Vehicle vehicle = modelMapper.map(vehicleDTO, Vehicle.class);
         vehicleRepository.save(vehicle);
+        return new ApiResponse<>(true, "Vehicle created successfully", null);
     }
 
-    @Override
-    public VehicleDTO getVehicleById(Integer id) {
+    public ApiResponse<VehicleDTO> getVehicleById(Integer id) {
         Optional<Vehicle> optionalVehicle = vehicleRepository.findById(id);
         if (optionalVehicle.isPresent()) {
             Vehicle vehicle = optionalVehicle.get();
-            return modelMapper.map(vehicle, VehicleDTO.class);
+            VehicleDTO vehicleDTO = modelMapper.map(vehicle, VehicleDTO.class);
+            return new ApiResponse<>(true, "Vehicle retrieved successfully", vehicleDTO);
         } else {
-            return null;
+            return new ApiResponse<>(false, "Vehicle not found", null);
         }
     }
 
-    @Override
-    public VehicleDTO updateVehicle(Integer id, VehicleDTO vehicleDTO) {
+    public ApiResponse<VehicleDTO> updateVehicle(Integer id, VehicleDTO vehicleDTO) {
         Optional<Vehicle> optionalVehicle = vehicleRepository.findById(id);
         if (optionalVehicle.isPresent()) {
             Vehicle vehicle = optionalVehicle.get();
@@ -46,22 +46,21 @@ public class VehicleSeviceImpl implements VehicleService {
             vehicle.setSeatingCapacity(vehicleDTO.getSeatingCapacity());
             vehicle.setYear(vehicleDTO.getYear());
 
-
             vehicleRepository.save(vehicle);
 
-            return modelMapper.map(vehicle, VehicleDTO.class);
+            VehicleDTO updatedVehicleDTO = modelMapper.map(vehicle, VehicleDTO.class);
+            return new ApiResponse<>(true, "Vehicle updated successfully", updatedVehicleDTO);
+        } else {
+            return new ApiResponse<>(false, "Vehicle not found", null);
         }
-        return null;
     }
 
-
-    @Override
-    public boolean deleteVehicle(Integer id) {
+    public ApiResponse<Boolean> deleteVehicle(Integer id) {
         if (vehicleRepository.existsById(id)) {
             vehicleRepository.deleteById(id);
-            return true;
+            return new ApiResponse<>(true, "Vehicle deleted successfully", true);
         } else {
-            return false;
+            return new ApiResponse<>(false, "Vehicle not found", false);
         }
     }
 }

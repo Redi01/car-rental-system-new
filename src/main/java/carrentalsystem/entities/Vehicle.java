@@ -24,6 +24,7 @@ public class Vehicle {
     private String model;
     private Integer year;
     private String fuelType;
+    private String transmission;
     private Integer seatingCapacity;
     private BigDecimal rentalPricePerDay;
     @OneToMany(mappedBy = "vehicle")

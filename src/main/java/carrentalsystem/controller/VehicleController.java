@@ -1,6 +1,7 @@
 package carrentalsystem.controller;
 
 import carrentalsystem.dto.VehicleDTO;
+import carrentalsystem.mapper.ApiResponse;
 import carrentalsystem.service.VehicleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,38 +18,38 @@ public class VehicleController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Object> createVehicle(@RequestBody VehicleDTO vehicleDTO) {
-        vehicleService.createVehicle(vehicleDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<ApiResponse<Void>> createVehicle(@RequestBody VehicleDTO vehicleDTO) {
+        ApiResponse<Void> response = vehicleService.createVehicle(vehicleDTO);
+        HttpStatus status = response.isSuccess() ? HttpStatus.CREATED : HttpStatus.INTERNAL_SERVER_ERROR;
+        return ResponseEntity.status(status).body(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VehicleDTO> getVehicle(@PathVariable Integer id) {
-        VehicleDTO vehicleDTO = vehicleService.getVehicleById(id);
-        if (vehicleDTO != null) {
-            return ResponseEntity.ok(vehicleDTO);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<ApiResponse<VehicleDTO>> getVehicle(@PathVariable Integer id) {
+        ApiResponse<VehicleDTO> response = vehicleService.getVehicleById(id);
+        HttpStatus status = response.isSuccess() ? HttpStatus.OK : HttpStatus.NOT_FOUND;
+        return ResponseEntity.status(status).body(response);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateVehicle(@PathVariable Integer id, @RequestBody VehicleDTO vehicleDTO) {
-        VehicleDTO updatedVehicle = vehicleService.updateVehicle(id, vehicleDTO);
-        if (updatedVehicle != null) {
-            return ResponseEntity.ok("Vehicle successfully updated");
+    public ResponseEntity<ApiResponse<String>> updateVehicle(@PathVariable Integer id, @RequestBody VehicleDTO vehicleDTO) {
+        ApiResponse<VehicleDTO> updatedVehicleResponse = vehicleService.updateVehicle(id, vehicleDTO);
+
+        if (updatedVehicleResponse.isSuccess()) {
+            return ResponseEntity.ok(new ApiResponse<>(true, "Vehicle successfully updated", "Vehicle successfully updated"));
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vehicle not found or failed to update");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(false, "Vehicle not found or failed to update", null));
         }
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteVehicle(@PathVariable Integer id) {
-        boolean deleted = vehicleService.deleteVehicle(id);
-        if (deleted) {
-            return ResponseEntity.ok("Vehicle deleted");
+    public ResponseEntity<ApiResponse<String>> deleteVehicle(@PathVariable Integer id) {
+        ApiResponse<Boolean> deleteResponse = vehicleService.deleteVehicle(id);
+
+        if (deleteResponse.getData()) {
+            return ResponseEntity.ok(new ApiResponse<>(true, "Vehicle deleted", "Vehicle deleted"));
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(false, "Vehicle not found", null));
         }
     }
 }

@@ -1,13 +1,14 @@
 package carrentalsystem.service;
 
 import carrentalsystem.dto.VehicleDTO;
+import carrentalsystem.mapper.ApiResponse;
 
 public interface VehicleService {
-    void createVehicle(VehicleDTO vehicleDTO);
+    ApiResponse<Void> createVehicle(VehicleDTO vehicleDTO);
 
-    VehicleDTO getVehicleById(Integer id);
+    ApiResponse<VehicleDTO> getVehicleById(Integer id);
 
-    VehicleDTO updateVehicle(Integer id, VehicleDTO vehicleDTO);
+    ApiResponse<VehicleDTO> updateVehicle(Integer id, VehicleDTO vehicleDTO);
 
-    boolean deleteVehicle(Integer id);
+    ApiResponse<Boolean> deleteVehicle(Integer id);
 }
