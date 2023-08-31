@@ -2,13 +2,16 @@ package carrentalsystem.service;
 
 import carrentalsystem.dto.VehicleDTO;
 import carrentalsystem.mapper.ApiResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface VehicleService {
-    ApiResponse<Void> createVehicle(VehicleDTO vehicleDTO);
+    void createVehicle(VehicleDTO vehicleDTO);
 
-    ApiResponse<VehicleDTO> getVehicleById(Integer id);
+    VehicleDTO getVehicleById(Integer id);
 
-    ApiResponse<VehicleDTO> updateVehicle(Integer id, VehicleDTO vehicleDTO);
+    VehicleDTO updateVehicle(Integer id, VehicleDTO vehicleDTO);
 
-    ApiResponse<Boolean> deleteVehicle(Integer id);
+    Boolean deleteVehicle(Integer id);
+
+    String uploadVehiclePhoto(Integer id, MultipartFile photo );
 }
