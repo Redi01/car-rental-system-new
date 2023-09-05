@@ -3,6 +3,9 @@ package carrentalsystem.entities;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public enum UserRole {
+public enum Role {
+
+    USER,
+    ADMIN
 
 }

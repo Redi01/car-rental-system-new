@@ -99,5 +99,4 @@ public class VehicleServiceImpl implements VehicleService {
             return "Failed to upload vehicle photo";
         }
     }
-
 }

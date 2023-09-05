@@ -1,7 +1,6 @@
 package carrentalsystem.service;
 
 import carrentalsystem.dto.VehicleDTO;
-import carrentalsystem.mapper.ApiResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface VehicleService {
@@ -13,5 +12,6 @@ public interface VehicleService {
 
     Boolean deleteVehicle(Integer id);
 
-    String uploadVehiclePhoto(Integer id, MultipartFile photo );
+    String uploadVehiclePhoto(Integer id, MultipartFile photo);
+
 }

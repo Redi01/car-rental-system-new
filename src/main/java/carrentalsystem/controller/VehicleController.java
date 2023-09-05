@@ -4,16 +4,27 @@ import carrentalsystem.dto.VehicleDTO;
 import carrentalsystem.mapper.ApiResponse;
 import carrentalsystem.service.VehicleService;
 import jakarta.persistence.EntityNotFoundException;
+import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Base64;
 
 @RestController
 @RequestMapping("/vehicles")
 public class VehicleController {
 
     private final VehicleService vehicleService;
+
+    private final String basePath = "C:\\Users\\Lenovo\\IdeaProjects\\car-rental-system\\src\\main\\resources\\photos\\";
 
     public VehicleController(VehicleService vehicleService) {
         this.vehicleService = vehicleService;
@@ -69,4 +80,38 @@ public class VehicleController {
             return ApiResponse.map(HttpStatus.INTERNAL_SERVER_ERROR, null, "Failed to upload vehicle photo");
         }
     }
+
+    @PostMapping("/{id}/upload-photo-as-string")
+    public ResponseEntity<Object> uploadPhotoAsString(@PathVariable Integer id, @RequestParam("base64Image") String base64Image) {
+        try {
+            byte[] decodedImage = Base64.getDecoder().decode(base64Image);
+
+            String fileName = "uploaded_image_" + id + ".jpg";
+            Path filePath = Paths.get(basePath, fileName);
+            Files.write(filePath, decodedImage);
+
+            return ApiResponse.map(HttpStatus.OK, null, "Image uploaded successfully");
+        } catch (IOException e) {
+            return ApiResponse.map(HttpStatus.INTERNAL_SERVER_ERROR, null, "Failed to upload image");
+        }
+    }
+
+    @GetMapping("/displayImage/{imageName}")
+    public ResponseEntity<Object> displayImage(@PathVariable String imageName) {
+        String imagePath = basePath + imageName;
+        File imageFile = new File(imagePath);
+
+        if (imageFile.exists() && imageFile.isFile()) {
+            try {
+                byte[] imageBytes = FileUtils.readFileToByteArray(imageFile);
+                return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(imageBytes);
+            } catch (IOException e) {
+                return ApiResponse.map(HttpStatus.OK, true, "Image found");
+            }
+        } else {
+            return ApiResponse.map(HttpStatus.NOT_FOUND, null, "Image not found");
+        }
+    }
+
+
 }
