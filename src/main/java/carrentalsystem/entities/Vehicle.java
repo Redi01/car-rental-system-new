@@ -24,8 +24,10 @@ public class Vehicle {
     private String model;
     private Integer year;
     private String fuelType;
+    private String transmission;
     private Integer seatingCapacity;
     private BigDecimal rentalPricePerDay;
+    private String photoPath;
     @OneToMany(mappedBy = "vehicle")
     private List<Reservation> reservations = new ArrayList<>();
 
