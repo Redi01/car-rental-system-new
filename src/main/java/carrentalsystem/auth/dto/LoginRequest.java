@@ -1,5 +1,7 @@
-package carrentalsystem.auth;
+package carrentalsystem.auth.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,11 +11,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
-
-    private String firstName;
-    private String lastName;
-    private Long phone;
+public class LoginRequest {
+    @Email
     private String email;
+    @Min(8)
     private String password;
 }

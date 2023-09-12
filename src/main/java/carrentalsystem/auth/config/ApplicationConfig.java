@@ -1,4 +1,4 @@
-package carrentalsystem.config;
+package carrentalsystem.auth.config;
 
 import carrentalsystem.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

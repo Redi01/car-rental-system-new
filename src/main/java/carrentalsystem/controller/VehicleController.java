@@ -1,9 +1,12 @@
 package carrentalsystem.controller;
 
+
+import carrentalsystem.auth.IsAdmin;
 import carrentalsystem.dto.VehicleDTO;
 import carrentalsystem.mapper.ApiResponse;
 import carrentalsystem.service.VehicleService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.constraints.NotNull;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,6 +34,7 @@ public class VehicleController {
     }
 
     @PostMapping("/create")
+    @IsAdmin(message = "This option can be accessed only by Administrator!")
     public ResponseEntity<Object> createVehicle(@RequestBody VehicleDTO vehicleDTO) {
         try {
             vehicleService.createVehicle(vehicleDTO);

@@ -1,4 +1,4 @@
-package carrentalsystem.auth;
+package carrentalsystem.auth.dto;
 
 import lombok.*;
 
@@ -6,7 +6,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponse {
+public class LoginResponse {
 
     private String token;
 }

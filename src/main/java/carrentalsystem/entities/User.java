@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Fetch;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,7 +24,7 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue
     private Integer userId;
-    private String name;
+    private String firstName;
     private String lastName;
     private String password;
     @Column(unique = true)
@@ -31,16 +32,17 @@ public class User implements UserDetails {
     private Integer phone;
     @Enumerated(EnumType.STRING)
     private Role role;
-    @OneToMany(mappedBy = "user")
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<Reservation> reservations = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<Invoice> invoices = new ArrayList<>();
 
-    @OneToMany(mappedBy = "rentedBy")
+    @OneToMany(mappedBy = "rentedBy", fetch = FetchType.EAGER)
     private List<Vehicle> rentedVehicles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<Review> reviews = new ArrayList<>();
 
     @Override

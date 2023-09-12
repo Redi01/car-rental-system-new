@@ -1,6 +1,6 @@
-package carrentalsystem.config;
+package carrentalsystem.auth.config;
 
-import carrentalsystem.service.JwtService;
+import carrentalsystem.auth.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

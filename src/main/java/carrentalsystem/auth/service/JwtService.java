@@ -1,10 +1,13 @@
-package carrentalsystem.service;
+package carrentalsystem.auth.service;
 
+import carrentalsystem.repository.JWTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +18,10 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@RequiredArgsConstructor
 public class JwtService {
-
     private static final String SECRET_KEY = "GlKn0sVKDeOht8eC55aHZAAwEBK6DZD2pNpE+zHitfrbQ19px48+JoR4tDR2hmniwvYsM5A6aoCBFqJTaEBxYqHOMArhFCOEK1AeBMYxwtoNHjOC8nzvju57lHgPeC5vLLYWtmeDgZoo1yGamr2pHMl55CZ6Gcp+DZB4MWTpDZR1viHjdwTlK+YBMcvsNIFgsBK9Y9KOJdgtGLMTA16D3pGeE89WzJIvzIhWgPnectk1L3RsooOJ83Zbne8GsTAmHaBl37BxHR632EysF8uHUTR4J/CoqdMbyLK0t8SGudf8/raALyPQ0I8blg3hr1aUkEeV7HFfOFrl/8xj4RZqv7I4mrLEun9z6x76aa7U32c=\n";
+    private final JWTokenRepository tokenRepository;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -72,4 +76,11 @@ public class JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
+    @Scheduled(cron = "0 0 3 * * ?")
+    public void deleteTokens() {
+        Date currentDate = new Date();
+        tokenRepository.deleteByExpirationDateBefore(currentDate);
+    }
+
 }
