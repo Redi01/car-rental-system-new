@@ -6,7 +6,6 @@ import carrentalsystem.dto.VehicleDTO;
 import carrentalsystem.mapper.ApiResponse;
 import carrentalsystem.service.VehicleService;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.constraints.NotNull;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -65,6 +64,7 @@ public class VehicleController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @IsAdmin(message = "This option can be accessed only by Administrator!")
     public ResponseEntity<Object> deleteVehicle(@PathVariable Integer id) {
         if (vehicleService.deleteVehicle(id)) {
             return ApiResponse.map(HttpStatus.OK, null, "Vehicle deleted successfully");

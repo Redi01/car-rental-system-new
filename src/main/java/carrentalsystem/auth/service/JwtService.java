@@ -7,6 +7,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,10 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 public class JwtService {
+
+    @Value("${app.security.jwt.expiration}")
+    private long expirationTime;
+
     private static final String SECRET_KEY = "GlKn0sVKDeOht8eC55aHZAAwEBK6DZD2pNpE+zHitfrbQ19px48+JoR4tDR2hmniwvYsM5A6aoCBFqJTaEBxYqHOMArhFCOEK1AeBMYxwtoNHjOC8nzvju57lHgPeC5vLLYWtmeDgZoo1yGamr2pHMl55CZ6Gcp+DZB4MWTpDZR1viHjdwTlK+YBMcvsNIFgsBK9Y9KOJdgtGLMTA16D3pGeE89WzJIvzIhWgPnectk1L3RsooOJ83Zbne8GsTAmHaBl37BxHR632EysF8uHUTR4J/CoqdMbyLK0t8SGudf8/raALyPQ0I8blg3hr1aUkEeV7HFfOFrl/8xj4RZqv7I4mrLEun9z6x76aa7U32c=\n";
     private final JWTokenRepository tokenRepository;
 
@@ -44,7 +49,7 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

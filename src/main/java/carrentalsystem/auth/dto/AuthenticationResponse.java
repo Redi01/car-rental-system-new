@@ -6,7 +6,9 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginResponse {
+public class AuthenticationResponse {
 
     private String token;
+
+    //todo add expiration time
 }

@@ -1,6 +1,7 @@
 package carrentalsystem.auth.service;
 
-import carrentalsystem.auth.dto.LoginRequest;
+import carrentalsystem.auth.dto.AuthenticationRequest;
+import carrentalsystem.auth.dto.AuthenticationResponse;
 import carrentalsystem.auth.dto.RegisterRequest;
 import carrentalsystem.entities.JWToken;
 import carrentalsystem.entities.Role;
@@ -11,18 +12,23 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
+    //    private static final long REFRESH_TOKEN_EXPIRATION_MS = 1000 * 60 * 60 * 24 * 30; // 30 days;
     private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
     private final JWTokenRepository tokenRepo;
+
+    private final UserDetailsService userDetailsService;
 
     ModelMapper modelMapper = new ModelMapper();
 
@@ -34,7 +40,7 @@ public class AuthenticationService {
         return user;
     }
 
-    public String authenticate(LoginRequest request) {
+    public String authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -47,5 +53,26 @@ public class AuthenticationService {
         jwToken.setToken(token);
         tokenRepo.save(jwToken);
         return token;
+    }
+
+    public AuthenticationResponse refreshToken(String oldToken) throws IllegalAccessException {
+        AuthenticationResponse response = new AuthenticationResponse();
+        if (oldToken == null) {
+            return null;
+        }
+
+        oldToken = oldToken.substring(7);
+        String userEmail = jwtService.extractUsername(oldToken);
+        if (userEmail == null) {
+            return null;
+        }
+
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+        if (!jwtService.isTokenValid(oldToken, userDetails)) {
+            throw new IllegalAccessException("Invalid refresh token");
+        }
+
+        response.setToken(jwtService.generateToken(userDetails));
+        return response;
     }
 }

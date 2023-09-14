@@ -1,10 +1,13 @@
 package carrentalsystem.auth.controller;
 
-import carrentalsystem.auth.dto.LoginRequest;
+import carrentalsystem.auth.dto.AuthenticationRequest;
+import carrentalsystem.auth.dto.AuthenticationResponse;
 import carrentalsystem.auth.dto.RegisterRequest;
 import carrentalsystem.auth.service.AuthenticationService;
 import carrentalsystem.entities.User;
 import carrentalsystem.mapper.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,13 +34,26 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody LoginRequest request) {
-        try{
+    public ResponseEntity<Object> login(@RequestBody AuthenticationRequest request) {
+        try {
             String authenticatedUser = service.authenticate(request);
             return ApiResponse.map(HttpStatus.OK, authenticatedUser, "Login successful");
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             return ApiResponse.map(HttpStatus.BAD_REQUEST, null, "Login failed");
+        }
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<Object> refreshAccessToken(@NonNull HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        try {
+            AuthenticationResponse authResponse = service.refreshToken(token);
+            if (authResponse == null) {
+                return ApiResponse.map(HttpStatus.BAD_REQUEST, null, "Refresh token failed!");
+            }
+            return ApiResponse.map(HttpStatus.OK, authResponse, "Refresh token created by success.");
+        } catch (Exception e) {
+            return ApiResponse.map(HttpStatus.INTERNAL_SERVER_ERROR, null, "Server failed!");
         }
     }
 }
