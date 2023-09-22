@@ -4,7 +4,6 @@ import carrentalsystem.auth.dto.AuthenticationRequest;
 import carrentalsystem.auth.dto.AuthenticationResponse;
 import carrentalsystem.auth.dto.RegisterRequest;
 import carrentalsystem.auth.service.AuthenticationService;
-import carrentalsystem.entities.User;
 import carrentalsystem.mapper.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
@@ -26,7 +25,7 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<Object> register(@RequestBody RegisterRequest request) {
         try {
-            User user = service.register(request);
+            service.register(request);
             return ApiResponse.map(HttpStatus.OK, null, "Registration successful");
         } catch (Exception e) {
             return ApiResponse.map(HttpStatus.BAD_REQUEST, null, "Registration failed, email is taken");

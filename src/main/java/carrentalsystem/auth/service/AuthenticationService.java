@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
-    //    private static final long REFRESH_TOKEN_EXPIRATION_MS = 1000 * 60 * 60 * 24 * 30; // 30 days;
     private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -32,12 +31,11 @@ public class AuthenticationService {
 
     ModelMapper modelMapper = new ModelMapper();
 
-    public User register(RegisterRequest request) {
+    public void register(RegisterRequest request) {
         User user = modelMapper.map(request, User.class);
         user.setRole(Role.USER);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         userRepo.save(user);
-        return user;
     }
 
     public String authenticate(AuthenticationRequest request) {

@@ -1,7 +1,5 @@
 package carrentalsystem.auth;
 
-import carrentalsystem.entities.Role;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

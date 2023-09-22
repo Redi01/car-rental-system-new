@@ -1,6 +1,9 @@
 package carrentalsystem.auth.dto;
 
 import lombok.*;
+import org.springframework.beans.factory.annotation.Value;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -9,6 +12,6 @@ import lombok.*;
 public class AuthenticationResponse {
 
     private String token;
-
-    //todo add expiration time
+    @Value("${app.security.jwt.expiration}")
+    private long expirationTime;
 }

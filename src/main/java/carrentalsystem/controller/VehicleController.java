@@ -3,6 +3,7 @@ package carrentalsystem.controller;
 
 import carrentalsystem.auth.IsAdmin;
 import carrentalsystem.dto.VehicleDTO;
+import carrentalsystem.entities.Vehicle;
 import carrentalsystem.mapper.ApiResponse;
 import carrentalsystem.service.VehicleService;
 import jakarta.persistence.EntityNotFoundException;
@@ -46,14 +47,15 @@ public class VehicleController {
     @GetMapping("/{id}")
     public ResponseEntity<Object> getVehicle(@PathVariable Integer id) {
         try {
-            VehicleDTO vehicleDTO = vehicleService.getVehicleById(id);
-            return ApiResponse.map(HttpStatus.OK, vehicleDTO, "Vehicle retrieved successfully");
+            Vehicle vehicle = vehicleService.getVehicleById(id);
+            return ApiResponse.map(HttpStatus.OK, vehicle, "Vehicle retrieved successfully");
         } catch (Exception e) {
             return ApiResponse.map(HttpStatus.NOT_FOUND, null, "Vehicle not found");
         }
     }
 
     @PutMapping("/update/{id}")
+    @IsAdmin
     public ResponseEntity<Object> updateVehicle(@PathVariable Integer id, @RequestBody VehicleDTO vehicleDTO) {
         try {
             VehicleDTO updatedVehicleDTO = vehicleService.updateVehicle(id, vehicleDTO);
@@ -64,7 +66,7 @@ public class VehicleController {
     }
 
     @DeleteMapping("/delete/{id}")
-    @IsAdmin(message = "This option can be accessed only by Administrator!")
+    @IsAdmin
     public ResponseEntity<Object> deleteVehicle(@PathVariable Integer id) {
         if (vehicleService.deleteVehicle(id)) {
             return ApiResponse.map(HttpStatus.OK, null, "Vehicle deleted successfully");

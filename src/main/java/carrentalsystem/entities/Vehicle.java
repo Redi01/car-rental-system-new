@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,15 +23,16 @@ public class Vehicle {
     private Integer seatingCapacity;
     private BigDecimal rentalPricePerDay;
     private String photoPath;
-    @OneToMany(mappedBy = "vehicle")
+    @OneToMany(mappedBy = "vehicle",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Reservation> reservations = new ArrayList<>();
 
-    @OneToMany(mappedBy = "vehicle")
+    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Review> reviews = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "rented_by_id")
     private User rentedBy;
+
     /*
     @Enumerated(EnumType.STRING)
     private AvailabilityStatus availabilityStatus;

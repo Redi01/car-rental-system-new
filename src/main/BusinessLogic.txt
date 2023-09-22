@@ -1,0 +1,12 @@
+Reservation Conditions:
+
+- If there aren't any reservations in database, you can create a new Reservation.
+
+- If there are existing reservations which the endDate of them is after the user's startDate
+for each of them we should check:
+1. The new reservation should start and end before the existing reservation.
+2. The new reservation should start after the existing reservation.
+3. If there are more than 2 existing reservations, and the new reservation is between
+
+
+4. If the endDate is before the existing startDate of the next existing reservation, stop the checking

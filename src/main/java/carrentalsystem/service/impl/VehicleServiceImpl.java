@@ -28,13 +28,9 @@ public class VehicleServiceImpl implements VehicleService {
         vehicleRepository.save(vehicle);
     }
 
-    public VehicleDTO getVehicleById(Integer id) {
+    public Vehicle getVehicleById(Integer id) {
         Optional<Vehicle> optionalVehicle = vehicleRepository.findById(id);
-        if (optionalVehicle.isPresent()) {
-            Vehicle vehicle = optionalVehicle.get();
-            return modelMapper.map(vehicle, VehicleDTO.class);
-        } else
-            return null;
+        return optionalVehicle.orElse(null);
     }
 
     public VehicleDTO updateVehicle(Integer id, VehicleDTO vehicleDTO) {
