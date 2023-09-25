@@ -9,5 +9,7 @@ import java.util.List;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
-    List<Reservation> getAllByEndDateGreaterThanOrderByStartDateDesc(LocalDateTime startDate);
+    List<Reservation> findByStartDateGreaterThanAndStartDateLessThan(LocalDateTime startDate, LocalDateTime endDate);
+
+    List<Reservation> findByEndDateGreaterThanAndEndDateLessThan(LocalDateTime startDate, LocalDateTime endDate);
 }

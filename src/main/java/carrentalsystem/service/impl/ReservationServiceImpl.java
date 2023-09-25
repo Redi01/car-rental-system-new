@@ -2,6 +2,7 @@ package carrentalsystem.service.impl;
 
 import carrentalsystem.dto.ReservationRequest;
 import carrentalsystem.entities.Reservation;
+import carrentalsystem.entities.User;
 import carrentalsystem.entities.Vehicle;
 import carrentalsystem.repository.ReservationRepository;
 import carrentalsystem.repository.UserRepository;
@@ -26,14 +27,12 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional
     @Override
     public Boolean createReservation(ReservationRequest reservationRequest) {
-
-        reservationRepository.getAllByEndDateGreaterThanOrderByStartDateDesc(reservationRequest.getStartDate());
-
         LocalDateTime startDate = reservationRequest.getStartDate();
         LocalDateTime endDate = reservationRequest.getEndDate();
 
+        // Todo:  Get user from Token
         Integer userId = reservationRequest.getUserId();
-        userRepository.findUserByUserId(userId).orElse(null);
+        User user = userRepository.findUserByUserId(userId).orElse(null);
 
         Integer vehicleId = reservationRequest.getVehicleId();
         Vehicle vehicle = vehicleService.getVehicleById(vehicleId);
@@ -46,44 +45,19 @@ public class ReservationServiceImpl implements ReservationService {
             return false;
         }
 
-        Reservation reservation = new Reservation(startDate, endDate, vehicle);
+        Reservation reservation = new Reservation(startDate, endDate, vehicle, user);
         reservationRepository.save(reservation);
         return true;
     }
 
     public Boolean isVehicleAvailable(Vehicle vehicle, LocalDateTime startDate, LocalDateTime endDate) {
-        List<Reservation> reservations = reservationRepository.getAllByEndDateGreaterThanOrderByStartDateDesc(startDate);
-
-        if(reservations.isEmpty()){
-            return true;
+        List<Reservation> conflictingStartDates = reservationRepository.findByStartDateGreaterThanAndStartDateLessThan(startDate, endDate);
+        if (!conflictingStartDates.isEmpty()) {
+            return false;
         }
 
-        Boolean isAvailable = Boolean.FALSE;
-
-        for (Reservation reservation : reservations) {
-            LocalDateTime existingStartDate = reservation.getStartDate();
-            LocalDateTime existingEndDate = reservation.getEndDate();
-
-            // First case: The new reservation is before an existing reservation
-            // E.g. StartDate: 13 October, existingStartDate: 15 October
-            // && TO DO: startDate is 24 hours before the existingStartDate - check if this one is needed
-            if (startDate.isBefore(existingStartDate) && endDate.isBefore(existingStartDate)) {
-                isAvailable = Boolean.TRUE;
-                break;
-            }
-
-            if (startDate.isAfter(existingEndDate)) {
-                return true;
-            }
-
-
-
-
-
-
-        }
-        return isAvailable;
+        List<Reservation> conflictingEndDates = reservationRepository.findByEndDateGreaterThanAndEndDateLessThan(startDate, endDate);
+        return conflictingEndDates.isEmpty();
     }
-
 
 }
