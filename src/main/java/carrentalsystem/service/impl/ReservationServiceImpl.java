@@ -24,39 +24,44 @@ public class ReservationServiceImpl implements ReservationService {
     private final UserRepository userRepository;
 
 
+    @Override
+    public Reservation findReservationById(Integer id) {
+        return reservationRepository.findByReservationId(id);
+    }
+
     @Transactional
     @Override
-    public Boolean createReservation(ReservationRequest reservationRequest) {
+    public Reservation createReservation(ReservationRequest reservationRequest) {
         LocalDateTime startDate = reservationRequest.getStartDate();
         LocalDateTime endDate = reservationRequest.getEndDate();
 
         // Todo:  Get user from Token
         Integer userId = reservationRequest.getUserId();
-        User user = userRepository.findUserByUserId(userId).orElse(null);
+        User user = userRepository.findUserByUserId(userId);
 
         Integer vehicleId = reservationRequest.getVehicleId();
         Vehicle vehicle = vehicleService.getVehicleById(vehicleId);
 
         if (vehicle == null || startDate == null || endDate == null) {
-            return false;
+            return null;
         }
 
         if (!isVehicleAvailable(vehicle, startDate, endDate)) {
-            return false;
+            return null;
         }
 
         Reservation reservation = new Reservation(startDate, endDate, vehicle, user);
         reservationRepository.save(reservation);
-        return true;
+        return reservation;
     }
 
     public Boolean isVehicleAvailable(Vehicle vehicle, LocalDateTime startDate, LocalDateTime endDate) {
-        List<Reservation> conflictingStartDates = reservationRepository.findByStartDateGreaterThanAndStartDateLessThan(startDate, endDate);
+        List<Reservation> conflictingStartDates = reservationRepository.findConflictingStartDates(startDate, endDate);
         if (!conflictingStartDates.isEmpty()) {
             return false;
         }
 
-        List<Reservation> conflictingEndDates = reservationRepository.findByEndDateGreaterThanAndEndDateLessThan(startDate, endDate);
+        List<Reservation> conflictingEndDates = reservationRepository.findConflictingEndDates(startDate, endDate);
         return conflictingEndDates.isEmpty();
     }
 

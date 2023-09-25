@@ -44,7 +44,7 @@ public class VehicleController {
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public ResponseEntity<Object> getVehicle(@PathVariable Integer id) {
         try {
             Vehicle vehicle = vehicleService.getVehicleById(id);

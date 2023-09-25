@@ -1,8 +1,10 @@
 package carrentalsystem.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -19,6 +21,7 @@ public class Reservation {
     private String reservationStatus;
     @ManyToOne
     @NotNull
+    @JsonBackReference
     @JoinColumn(insertable = false, updatable = false, name = "userId")
     private User user;
 

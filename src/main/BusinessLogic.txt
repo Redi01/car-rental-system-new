@@ -1,4 +1,5 @@
 Reservation Conditions
 
-1. If there are any reservations in database between the startDate and endDate, you can't create a new Reservation.
+1. You cannot create a new reservation if there are any existing reservations in the database that fall within the date range
+   specified by the startDate and endDate.
 2. Reservation's duration can't be longer than the specified duration set by user. (E.g. 10 days)
