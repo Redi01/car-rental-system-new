@@ -2,9 +2,9 @@ package carrentalsystem.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -19,15 +19,14 @@ public class Reservation {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String reservationStatus;
-    @ManyToOne
-    @NotNull
-    @JsonBackReference
-    @JoinColumn(insertable = false, updatable = false, name = "userId")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "user_id")
+    @JsonBackReference(value = "userId")
     private User user;
-
-    @ManyToOne
-    @NotNull
-    @JoinColumn(insertable = false, updatable = false, name = "vehicleId")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "vehicle_id")
+    @JsonBackReference(value = "vehicleId")
+    @ToString.Exclude
     private Vehicle vehicle;
 
     public Reservation(LocalDateTime startDate, LocalDateTime endDate, Vehicle vehicle, User user) {
@@ -36,5 +35,6 @@ public class Reservation {
         this.vehicle = vehicle;
         this.user = user;
     }
+
 
 }

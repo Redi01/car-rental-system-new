@@ -14,5 +14,5 @@ public interface ReservationService {
 
     Reservation createReservation(ReservationRequest reservationRequest);
 
-    Boolean isVehicleAvailable(Vehicle vehicle, LocalDateTime startDate, LocalDateTime endDate);
+//    Boolean isVehicleAvailable(Vehicle vehicle, LocalDateTime startDate, LocalDateTime endDate);
 }

@@ -2,6 +2,7 @@ package carrentalsystem.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -23,10 +24,11 @@ public class Vehicle {
     private Integer seatingCapacity;
     private BigDecimal rentalPricePerDay;
     private String photoPath;
-    @OneToMany(mappedBy = "vehicle",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "vehicle",cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @ToString.Exclude
     private List<Reservation> reservations = new ArrayList<>();
 
-    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private List<Review> reviews = new ArrayList<>();
 
     @ManyToOne
